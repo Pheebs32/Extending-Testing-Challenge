@@ -15,7 +15,7 @@ The program expects a target directory as an argument. It checks for the presenc
 
 1. Target directory: /target_directory
 2. originals directory contains three documents: test1.txt, test2.txt, and test3.txt.
-3. updates directory contains four documents: test2.txt, test3.txt, test4.txt, and test5.txt.
+3. updates directory contains four documents: test1.txt, test2.txt, test3.txt.
 4. allowlist file contains the following names: "Smith", "Johnson", "Williams".
 
 **Expected Behavior:**
