@@ -20,3 +20,6 @@ The program expects a target directory as an argument. It checks for the presenc
 
 **Expected Behavior:**
 Since only the allowlist file is present, the program should copy the documents from the originals and updates directories to the finals directory, excluding any documents with names not listed in the allowlist file.
+
+**Actual Results**
+Works as expected with correct given data
