@@ -23,3 +23,5 @@ Since only the allowlist file is present, the program should copy the documents 
 
 **Actual Results**
 Works as expected with correct given data
+
+Now that this starting scenario proves I can generate random data to use I will now go thourgh each scenario that can be given and create a file for each one before testing to see if it is correct.
