@@ -11,8 +11,9 @@ class DocumentUpdaterTestCase(unittest.TestCase):
         # Generate the necessary directories in the target directory
         os.makedirs(os.path.join(self.target_dir, "originals"))
         os.makedirs(os.path.join(self.target_dir, "updates"))
+        os.makedirs(os.path.join(self.target_dir, "finals"))
         with open(os.path.join(self.target_dir, "allowlist"), "w") as allowlist_file:
-            allowlist_file.write("Smith.txt\n")
+            allowlist_file.write("Doe.txt\n")
 
     def tearDown(self):
         # Clean up the target directory after each test
@@ -60,17 +61,17 @@ class DocumentUpdaterTestCase(unittest.TestCase):
 
     def test_file_in_originals_allowlist_and_updates(self):
         # Add a file to the originals directory
-        filename = "Smith.txt"
+        filename = "Doe.txt"
         with open(os.path.join(self.target_dir, "originals", filename), "w") as file:
-            file.write("Dr Smith\nMakers Academy\nZetland House\nLondon\nEC2A 4HJ\n")
+            file.write("Dr Doe\nMakers Academy\nZetland House\nLondon\nEC2A 4HJ\n")
 
         # Add the same file name to the allowlist
         with open(os.path.join(self.target_dir, "allowlist"), "a") as file:
-            file.write("Smith.txt\n")
+            file.write("Doe.txt\n")
 
         # Add the same file name to the updates directory
         with open(os.path.join(self.target_dir, "updates", filename), "w") as file:
-            file.write("Dr Smith\nMakers Academy\nZetland House\nLondon\nEC2A 4HJ\n")
+            file.write("Dr Doe\nMakers Academy\nZetland House\nLondon\nEC2A 4HJ\n")
 
         # Run the program
         subprocess.check_output(["python3", "document_updater.py", self.target_dir])
