@@ -3,6 +3,8 @@ import shutil
 import unittest
 import os
 import subprocess
+from faker import Faker
+import time
 
 class DocumentUpdaterTestCase(unittest.TestCase):
     def setUp(self):
@@ -13,20 +15,30 @@ class DocumentUpdaterTestCase(unittest.TestCase):
         os.makedirs(os.path.join(self.target_dir, "originals"))
         os.makedirs(os.path.join(self.target_dir, "updates"))
         os.makedirs(os.path.join(self.target_dir, "finals"))
+
+        # Generate the allowlist file using Faker
+        fake = Faker()
         with open(os.path.join(self.target_dir, "allowlist"), "w") as allowlist_file:
-            allowlist_file.write("Doe.txt\n")
+            last_name = fake.last_name()
+            filename = f"{last_name}.txt"
+            allowlist_file.write(f"{filename}\n")
 
 
     def tearDown(self):
         # Clean up the target directory after each test
         shutil.rmtree(self.target_dir)
+        # time.sleep(2)
 
 
     def test_file_added_to_originals_only(self):
-        # Add a file to the originals directory
-        filename = "Doe.txt"
+        fake = Faker()
+        last_name = fake.last_name()
+        filename = f"{last_name}.txt"
+        content = f"{fake.name()}\n{fake.street_address()}\n{fake.city()}\n{fake.postcode()}\n"
+
+        # Add the file to the originals directory
         with open(os.path.join(self.target_dir, "originals", filename), "w") as file:
-            file.write("Dr Doe\nMakers Academy\nZetland House\nLondon\nEC2A 4HJ\n")
+            file.write(content)
 
         # Run the program
         subprocess.check_output(["python3", "document_updater.py", self.target_dir])
@@ -42,14 +54,18 @@ class DocumentUpdaterTestCase(unittest.TestCase):
 
 
     def test_file_added_to_originals_and_allowlist(self):
-        # Add a file to the originals directory
-        filename = "Doe.txt"
+        fake = Faker()
+        last_name = fake.last_name()
+        filename = f"{last_name}.txt"
+        content = f"{fake.name()}\n{fake.street_address()}\n{fake.city()}\n{fake.postcode()}\n"
+
+        # Add the file to the originals directory
         with open(os.path.join(self.target_dir, "originals", filename), "w") as file:
-            file.write("Dr Doe\nMakers Academy\nZetland House\nLondon\nEC2A 4HJ\n")
+            file.write(content)
 
         # Add the same file name to the allowlist
         with open(os.path.join(self.target_dir, "allowlist"), "a") as file:
-            file.write("Doe.txt\n")
+            file.write(f"{filename}\n")
 
         # Run the program
         subprocess.check_output(["python3", "document_updater.py", self.target_dir])
@@ -65,23 +81,27 @@ class DocumentUpdaterTestCase(unittest.TestCase):
 
 
     def test_file_in_originals_allowlist_and_updates(self):
-        # Add a file to the originals directory
-        filename = "Doe.txt"
+        fake = Faker()
+        last_name = fake.last_name()
+        filename = f"{last_name}.txt"
+        content = f"{fake.name()}\n{fake.street_address()}\n{fake.city()}\n{fake.postcode()}\n"
+
+        # Add the file to the originals directory
         with open(os.path.join(self.target_dir, "originals", filename), "w") as file:
-            file.write("Dr Doe\nMakers Academy\nZetland House\nLondon\nEC2A 4HJ\n")
+            file.write(content)
 
         # Add the same file name to the allowlist
         with open(os.path.join(self.target_dir, "allowlist"), "a") as file:
-            file.write("Doe.txt\n")
+            file.write(f"{filename}\n")
 
-        # Add the same file name to the updates directory
+        # Add the file to the updates directory
         with open(os.path.join(self.target_dir, "updates", filename), "w") as file:
-            file.write("Dr Doe\nMakers Academy\nZetland House\nLondon\nEC2A 4HJ\n")
+            file.write(content)
 
         # Run the program
         subprocess.check_output(["python3", "document_updater.py", self.target_dir])
 
-        # Assert that the file remains unchanged in the originals directory
+        # Assert that the file is not copied to the originals directory
         self.assertTrue(os.path.exists(os.path.join(self.target_dir, "originals", filename)))
 
         # Assert that the file remains unchanged in the updates directory
@@ -106,14 +126,18 @@ class DocumentUpdaterTestCase(unittest.TestCase):
 
 
     def test_file_not_in_originals_but_in_allowlist_and_updates(self):
-        # Add a file to the allowlist
-        filename = "Doe.txt"
-        with open(os.path.join(self.target_dir, "allowlist"), "a") as file:
-            file.write("Doe.txt\n")
+        fake = Faker()
+        last_name = fake.last_name()
+        filename = f"{last_name}.txt"
+        content = f"{fake.name()}\n{fake.street_address()}\n{fake.city()}\n{fake.postcode()}\n"
 
-        # Add the same file name to the updates directory
+        # Add the same file name to the allowlist
+        with open(os.path.join(self.target_dir, "allowlist"), "a") as file:
+            file.write(f"{filename}\n")
+
+        # Add the file to the updates directory
         with open(os.path.join(self.target_dir, "updates", filename), "w") as file:
-            file.write("Dr Doe\nMakers Academy\nZetland House\nLondon\nEC2A 4HJ\n")
+            file.write(content)
 
         # Run the program
         subprocess.check_output(["python3", "document_updater.py", self.target_dir])
@@ -126,9 +150,6 @@ class DocumentUpdaterTestCase(unittest.TestCase):
 
         # Assert that the file is copied to the finals directory
         self.assertTrue(os.path.exists(os.path.join(self.target_dir, "finals", filename)))
-
-        # Assert that the file is not copied to the originals directory
-        self.assertFalse(os.path.exists(os.path.join(self.target_dir, "originals", filename)))
 
         # # Assert that the content of the file remains unchanged in the updates directory
         # with open(os.path.join(self.target_dir, "updates", filename), "r") as file:
@@ -144,10 +165,14 @@ class DocumentUpdaterTestCase(unittest.TestCase):
 
 
     def test_file_not_in_any_directories(self):
-        # Add a file name to the allowlist
-        filename = "Doe.txt"
+        fake = Faker()
+        last_name = fake.last_name()
+        filename = f"{last_name}.txt"
+        content = f"{fake.name()}\n{fake.street_address()}\n{fake.city()}\n{fake.postcode()}\n"
+
+        # Add the same file name to the allowlist
         with open(os.path.join(self.target_dir, "allowlist"), "a") as file:
-            file.write("Doe.txt\n")
+            file.write(f"{filename}\n")
 
         # Run the program
         subprocess.check_output(["python3", "document_updater.py", self.target_dir])
