@@ -147,11 +147,3 @@ try:
     shutil.rmtree("blends")
 except FileNotFoundError:
     pass
-# Print debug information or any other relevant details
-print("List files:", contents)
-print("List file type:", listfiletype)
-print("List data:", list_data)
-print("List documents:", list_docs)
-print("Original documents:", original_docs)
-print("Update documents:", update_docs)
-print("Error file:", errorfile)
