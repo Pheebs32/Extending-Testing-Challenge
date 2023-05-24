@@ -8,8 +8,7 @@
 3. Validates the document files in terms of their content length.
 4. Creates a new directory called finals or empties an existing finals directory.
 5. Depending on the type of list file found (droplist or allowlist), applies specific rules to filter the document files.
-6. Performs a blend operation on documents that exist in both originals and updates directories if the list file is a droplist.
-7. Copies the filtered and blended documents to the finals directory.
+6. Copies the filtered and blended documents to the finals directory.
 
 **Scenario:**
 
@@ -19,7 +18,7 @@
 4. allowlist file contains the following names: "Smith", "Johnson", "Williams".
 
 **Expected Behavior:**
-<br>Since only the allowlist file is present, the program should copy the documents from the originals and updates directories to the finals directory, excluding any documents with names not listed in the allowlist file.
+<br>Since only the allowlist file is present, the program should copy the documents from the originals and updates directories to the finals directory, excluding any documents with names not listed in the allowlist file or not in updates.
 
 **Actual Results**
 <br>Works as expected with correct given data

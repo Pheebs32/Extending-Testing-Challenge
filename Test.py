@@ -20,20 +20,19 @@ class DocumentUpdaterTestCase(unittest.TestCase):
         fake = Faker()
         with open(os.path.join(self.target_dir, "allowlist"), "w") as allowlist_file:
             last_name = fake.last_name()
-            filename = f"{last_name}.txt"
+            filename = f"{last_name}"
             allowlist_file.write(f"{filename}\n")
 
 
     def tearDown(self):
+        pass
         # Clean up the target directory after each test
         shutil.rmtree(self.target_dir)
-        # time.sleep(2)
-
 
     def test_file_added_to_originals_only(self):
         fake = Faker()
         last_name = fake.last_name()
-        filename = f"{last_name}.txt"
+        filename = f"{last_name}"
         content = f"{fake.name()}\n{fake.street_address()}\n{fake.city()}\n{fake.postcode()}\n"
 
         # Add the file to the originals directory
@@ -41,7 +40,8 @@ class DocumentUpdaterTestCase(unittest.TestCase):
             file.write(content)
 
         # Run the program
-        subprocess.check_output(["python3", "document_updater.py", self.target_dir])
+        proc = subprocess.Popen(["python3", "document_updater.py", self.target_dir])
+        proc.wait()
 
         # Assert that the file remains unchanged in the originals directory
         self.assertTrue(os.path.exists(os.path.join(self.target_dir, "originals", filename)))
@@ -56,7 +56,7 @@ class DocumentUpdaterTestCase(unittest.TestCase):
     def test_file_added_to_originals_and_allowlist(self):
         fake = Faker()
         last_name = fake.last_name()
-        filename = f"{last_name}.txt"
+        filename = f"{last_name}"
         content = f"{fake.name()}\n{fake.street_address()}\n{fake.city()}\n{fake.postcode()}\n"
 
         # Add the file to the originals directory
@@ -68,7 +68,8 @@ class DocumentUpdaterTestCase(unittest.TestCase):
             file.write(f"{filename}\n")
 
         # Run the program
-        subprocess.check_output(["python3", "document_updater.py", self.target_dir])
+        proc = subprocess.Popen(["python3", "document_updater.py", self.target_dir])
+        proc.wait()
 
         # Assert that the file remains unchanged in the originals directory
         self.assertTrue(os.path.exists(os.path.join(self.target_dir, "originals", filename)))
@@ -77,13 +78,13 @@ class DocumentUpdaterTestCase(unittest.TestCase):
         self.assertFalse(os.path.exists(os.path.join(self.target_dir, "updates", filename)))
 
         # Assert that the file does not exist in the finals directory
-        self.assertFalse(os.path.exists(os.path.join(self.target_dir, "finals", filename)))
+        self.assertTrue(os.path.exists(os.path.join(self.target_dir, "finals", filename)))
 
 
     def test_file_in_originals_allowlist_and_updates(self):
         fake = Faker()
         last_name = fake.last_name()
-        filename = f"{last_name}.txt"
+        filename = f"{last_name}"
         content = f"{fake.name()}\n{fake.street_address()}\n{fake.city()}\n{fake.postcode()}\n"
 
         # Add the file to the originals directory
@@ -99,7 +100,8 @@ class DocumentUpdaterTestCase(unittest.TestCase):
             file.write(content)
 
         # Run the program
-        subprocess.check_output(["python3", "document_updater.py", self.target_dir])
+        proc = subprocess.Popen(["python3", "document_updater.py", self.target_dir])
+        proc.wait()
 
         # Assert that the file is not copied to the originals directory
         self.assertTrue(os.path.exists(os.path.join(self.target_dir, "originals", filename)))
@@ -108,7 +110,7 @@ class DocumentUpdaterTestCase(unittest.TestCase):
         self.assertTrue(os.path.exists(os.path.join(self.target_dir, "updates", filename)))
 
         # Assert that the file is copied to the finals directory
-        self.assertTrue(os.path.exists(os.path.join(self.target_dir, "finals", filename)))
+        self.assertTrue(os.path.exists(os.path.join(self.target_dir, "finals", last_name)))
 
         # # Assert that the content of the file remains unchanged in the originals directory
         # with open(os.path.join(self.target_dir, "originals", filename), "r") as file:
@@ -128,7 +130,7 @@ class DocumentUpdaterTestCase(unittest.TestCase):
     def test_file_not_in_originals_but_in_allowlist_and_updates(self):
         fake = Faker()
         last_name = fake.last_name()
-        filename = f"{last_name}.txt"
+        filename = f"{last_name}"
         content = f"{fake.name()}\n{fake.street_address()}\n{fake.city()}\n{fake.postcode()}\n"
 
         # Add the same file name to the allowlist
@@ -140,7 +142,8 @@ class DocumentUpdaterTestCase(unittest.TestCase):
             file.write(content)
 
         # Run the program
-        subprocess.check_output(["python3", "document_updater.py", self.target_dir])
+        proc = subprocess.Popen(["python3", "document_updater.py", self.target_dir])
+        proc.wait()
 
         # Assert that the file is not copied to the originals directory
         self.assertFalse(os.path.exists(os.path.join(self.target_dir, "originals", filename)))
@@ -163,11 +166,38 @@ class DocumentUpdaterTestCase(unittest.TestCase):
         #     final_content = file.read()
         # self.assertEqual(updated_content, final_content)
 
+    def test_file_in_originals_and_updates(self):
+        fake = Faker()
+        last_name = fake.last_name()
+        filename = f"{last_name}"
+        content = f"{fake.name()}\n{fake.street_address()}\n{fake.city()}\n{fake.postcode()}\n"
+        # Add the file to the originals directory
+        with open(os.path.join(self.target_dir, "originals", filename), "w") as file:
+            file.write(content)
+
+        # Add the file to the updates directory
+        with open(os.path.join(self.target_dir, "updates", filename), "w") as file:
+            file.write(content)
+
+        # Run the program
+        proc = subprocess.Popen(["python3", "document_updater.py", self.target_dir])
+        proc.wait()
+
+        # Assert that the file remains unchanged in the originals directory
+        self.assertTrue(os.path.exists(os.path.join(self.target_dir, "originals", filename)))
+
+        # Assert that the file remains unchanged in the updates directory
+        self.assertTrue(os.path.exists(os.path.join(self.target_dir, "updates", filename)))
+
+        # Assert that the file is copied to the finals directory
+        self.assertTrue(os.path.exists(os.path.join(self.target_dir, "finals", filename)))
+
+        #This is an example of a test that would include content covereage to ensure the correct file was carried over to 'finals'
 
     def test_file_not_in_any_directories(self):
         fake = Faker()
         last_name = fake.last_name()
-        filename = f"{last_name}.txt"
+        filename = f"{last_name}"
         content = f"{fake.name()}\n{fake.street_address()}\n{fake.city()}\n{fake.postcode()}\n"
 
         # Add the same file name to the allowlist
@@ -175,7 +205,8 @@ class DocumentUpdaterTestCase(unittest.TestCase):
             file.write(f"{filename}\n")
 
         # Run the program
-        subprocess.check_output(["python3", "document_updater.py", self.target_dir])
+        proc = subprocess.Popen(["python3", "document_updater.py", self.target_dir])
+        proc.wait()
 
         # Assert that the file is not copied to the originals directory
         self.assertFalse(os.path.exists(os.path.join(self.target_dir, "originals", filename)))

@@ -45,7 +45,7 @@ Assert that the file remains unchanged in the updates directory.
 Assert that the file is copied to the finals directory.
 
 *Actual Results:*
-Seems to not want to push the file into final despite it acheiving all reqiurments
+As expected
 
 **Scenario 4: Adding a file to allowlist and updates directories only**
 Add a file name to the allowlist file.
@@ -56,7 +56,7 @@ Assert that the file remains unchanged in the updates directory.
 Assert that the file is copied to the finals directory.
 
 *Actual Results:*
-Seems to not want to push the file into final despite it acheiving all reqiurments 
+As expected
 
 **Scenario 5: Adding a file to neither originals, allowlist, nor updates directories**
 Run the program.
@@ -74,18 +74,15 @@ Assert that there are no changes in the originals, updates, or finals directorie
 As expected
 
 ***
-Unsure as to why tests 3 and 4 fail when executing to finals when all other aspect of the test function as intended.
+
+## UPDATE ON TESTS - WORKING
+
+After coming back with fresh eyes I saw my issues in my test conditions.
+<br>The first one is that when I passsed the information through I was using 'name.txt' and somewhere in the source code there must be a strip function for punctuation which at the point of writing the files name to output which prevents the files from being passed into 'finals'.
+
+<br>My second error was a race condition where in I asserted the test case before the program had finished executing therefor not giving me the required assertion. By adding the proc.wait() function this means that the test cases wait untill the program has finished and produces an exit code.
 
 ***
-Transfered all test to 'Faker' so data is randomly made for these tests rather than being statically made before hand.
-Still cannot figure out how to get the document_updater.py to run alongside tests.
 
-***
-The 'document_updater.py' script is designed to be run from the command line or terminal. When executing a Python script from the command line, it typically receives command-line arguments that can be accessed within the script.
-
-The line I used to try to activate the script from testing included a subprocess module to execute the 'document_updater.py' script as a separate process. It essentially simulates running the script from the terminal. The command-line arguments are passed as a list of strings, where "python3" is the command to run the Python interpreter and "document_updater.py" is the name of the script file. self.target_dir is the target directory path, which is passed as an argument to the script.
-
-The reason it breaks when running from testing is that the document_updater.py script expects to receive command-line arguments. However, when I directly call the script from a test case using subprocess.check_output, it doesn't receive the expected command-line arguments, which may cause the script to behave differently or encounter errors.
-
-While I tried multiple ways of running the script from the test cases non of them worked and the only way I could think of to get it to work is it would be best to refactor the script into modular functions or classes that can be imported and tested directly within the test cases, without relying on the command-line interface.
-***
+I have now discovered as I have looked further into this that this test suite is not complete. 
+<br>I have done what I can in the time given but if I had further time I would add tests to increase test covereage into looking into the files contents so not the wrong file from 'originals' or 'updates' is passed over and I would look into tests with more than one file to carry over for more coverage. 
