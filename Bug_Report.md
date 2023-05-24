@@ -20,7 +20,8 @@ strict format that may not reflect real-world addresses accurately.
 <br>The document_updater.py script requires addresses to be in the specific 
 format of name, street address, city, postcode. If addresses don't conform to 
 this format, the script may encounter errors or produce incorrect results.
-<br>![Screenshot 2023-05-23 at 15.27.19.png](..%2F..%2FDesktop%2FScreenshot%202023-05-23%20at%2015.27.19.png)
+<br>![](Screenshot%202023-05-23%20at%2015.27.19.png)
+
 
 **Impact:**
 <br>This issue limits the usability and applicability of the document_updater.py 
@@ -81,7 +82,7 @@ there are no updates for those addresses.
 **Actual Result:**
 Files in the originals directory and allowlist without corresponding 
 updates in the updates directory are not included in the finals' directory.
-<br>![Screenshot 2023-05-24 at 12.13.05.png](..%2F..%2FDesktop%2FScreenshot%202023-05-24%20at%2012.13.05.png)
+<br>![](Screenshot%202023-05-24%20at%2012.13.05.png)
 
 **Impact:**
 The current behavior of the document_updater.py script may lead to inconsistencies 
