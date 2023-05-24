@@ -1,3 +1,4 @@
+import importlib
 import shutil
 import unittest
 import os
@@ -78,10 +79,19 @@ class DocumentUpdaterTestCase(unittest.TestCase):
             file.write("Dr Doe\nMakers Academy\nZetland House\nLondon\nEC2A 4HJ\n")
 
         # Run the program
-        try:
-            subprocess.check_output(["python3", "document_updater.py", self.target_dir])
-        except subprocess.CalledProcessError as e:
-            print("Error executing document_updater.py:", e.output)
+        # command = ["python3", "document_updater.py", self.target_dir]
+        # subprocess.check_output(command, cwd=self.target_dir, stderr=subprocess.STDOUT)
+
+        # Run the document_updater.py script using subprocess
+        result = subprocess.run(["python3", "document_updater.py", self.target_dir], capture_output=True, text=True)
+
+        # Check the return code
+        self.assertEqual(result.returncode, 0)
+
+        # Check the standard output and error output
+        print("Standard Output:", result.stdout)
+        print("Standard Error:", result.stderr)
+
         # subprocess.check_output(["python3", "document_updater.py", self.target_dir])
 
         # # Assert that the file remains unchanged in the originals directory
